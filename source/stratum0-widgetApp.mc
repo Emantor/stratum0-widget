@@ -55,7 +55,7 @@ class StratumBackgroundDelegate extends System.ServiceDelegate {
     }
 
 }
-(:background)
+(:background, :glance)
 class stratum0_widgetApp extends Application.AppBase {
 
     var glance = null;
@@ -63,7 +63,7 @@ class stratum0_widgetApp extends Application.AppBase {
 
     function initialize() {
         AppBase.initialize();
-        if(Background.getTemporalEventRegisteredTime() != null) {
+        if(Background.getTemporalEventRegisteredTime() == null) {
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
         }
         background = new $.StratumBackgroundDelegate();
