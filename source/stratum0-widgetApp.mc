@@ -10,11 +10,6 @@ import Toybox.Application.Storage;
 (:background)
 class StratumBackgroundDelegate extends System.ServiceDelegate {
 
-    var havedata = false;
-    var open = false;
-    var openedBy = null;
-    var since = null;
-
     function initialize() {
         ServiceDelegate.initialize();
     }
@@ -36,15 +31,20 @@ class StratumBackgroundDelegate extends System.ServiceDelegate {
 
    function onReceive(responseCode as Number, data as Dictionary or String or Null) as Void {
      if (responseCode != 200) {
-        return;
+        Background.exit([false]);
      }
 
-      havedata = true;
-      open = data.get("isOpen");
-      openedBy = data.get("openedBy");
-      since = data.get("since");
-      System.println("Have data, exiting");
-      Background.exit([open, openedBy, since]);
+     var state = null;
+     var open = false;
+     var trigger = null;
+     var lastchange = null;
+
+     state = data.get("state") as Dictionary;
+     open = state.get("open");
+     trigger = state.get("trigger_person");
+     lastchange = state.get("lastchange") as Number;
+     System.println("Have data, exiting");
+     Background.exit([true, open, trigger, lastchange]);
     }
 
 }

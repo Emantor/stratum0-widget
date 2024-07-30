@@ -2,15 +2,18 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 import Toybox.Lang;
 import Toybox.Test;
+import Toybox.Time;
+import Toybox.Time.Gregorian;
+import Toybox.Weather;
 
 (:glance)
 class WidgetGlanceView extends Ui.GlanceView {
 
-    var data = null;
+    var data as Null or Array = null;
 
     function initialize(data) {
       GlanceView.initialize();
-      me.data = data;
+      me.data = data as Array;
     }
     
     function onUpdate(dc) {
@@ -24,18 +27,33 @@ class WidgetGlanceView extends Ui.GlanceView {
         }
 
         System.println("Accessing data");
-        var open = data[0];
-        var openedBy = data[1];
-        var since = data[2];
-
+        var havedata = data[0] as Boolean;
+        if (!havedata) {
+          dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "No valid data", Graphics.TEXT_JUSTIFY_LEFT);
+        }
+        var open = data[1] as Boolean;
         if (!open) {
           dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "Stratum 0 closed", Graphics.TEXT_JUSTIFY_LEFT);
         } else {
           dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "Stratum 0 open", Graphics.TEXT_JUSTIFY_LEFT);
         }
-        
-        var timeUser = Lang.format("$1$, $2$", [openedBy, since]);
+
+        var openedBy = data[2] as String;
+        var since = data[3] as Number;
+        var ts1 = new Time.Moment(since);
+        var conditions = Weather.getCurrentConditions();
+        var location = conditions.observationLocationPosition;
+        var moment = Gregorian.localMoment(location, ts1);
+        var info = Gregorian.info(moment, Time.FORMAT_SHORT);
+
+        var timeUser = " - ";
+        timeUser = Lang.format("$1$, $2$.$3$ $4$:$5$", [
+          openedBy,
+          info.day.format("%02u"),
+          info.month.format("%02u"),
+          info.hour.format("%02u"),
+          info.min.format("%02u")
+        ]);
         dc.drawText(10 ,dc.getHeight() / 2, Graphics.FONT_GLANCE, timeUser, Graphics.TEXT_JUSTIFY_LEFT);
     }
-
 }
