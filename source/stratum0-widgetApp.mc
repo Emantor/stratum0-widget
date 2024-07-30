@@ -19,13 +19,6 @@ class StratumBackgroundDelegate extends System.ServiceDelegate {
         ServiceDelegate.initialize();
     }
 
-    public function getdata() {
-        if(!havedata) {
-            return null;
-        }
-
-        return [open, openedBy, since];
-    }
     public function onTemporalEvent() as Void {
         fetchdata();
     }
