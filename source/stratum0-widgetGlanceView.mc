@@ -5,6 +5,7 @@ import Toybox.Test;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
 import Toybox.Weather;
+import Toybox.Position;
 
 (:glance)
 class WidgetGlanceView extends Ui.GlanceView {
@@ -31,24 +32,40 @@ class WidgetGlanceView extends Ui.GlanceView {
         if (!havedata) {
           dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "No valid data", Graphics.TEXT_JUSTIFY_LEFT);
         }
-        var open = data[1] as Boolean;
-        if (!open) {
-          dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "Stratum 0 closed", Graphics.TEXT_JUSTIFY_LEFT);
-        } else {
-          dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "Stratum 0 open", Graphics.TEXT_JUSTIFY_LEFT);
-        }
 
+        var open = data[1] as Boolean;
         var openedBy = data[2] as String;
+        var openStatus;
+        if (!open) {
+          openStatus = Lang.format("$1$: $2$", [
+            "Closed",
+            openedBy
+          ]);
+        } else {
+          openStatus = Lang.format("$1$: $2$", [
+            "Open",
+            openedBy
+          ]);
+        }
+        dc.drawText(10 ,0 , Graphics.FONT_GLANCE, openStatus, Graphics.TEXT_JUSTIFY_LEFT);
+
         var since = data[3] as Number;
         var ts1 = new Time.Moment(since);
         var conditions = Weather.getCurrentConditions();
-        var location = conditions.observationLocationPosition;
+        var location; 
+        if (conditions != null and conditions.observationLocationPosition != null) {
+          location = conditions.observationLocationPosition;
+        } else {
+          location = new Position.Location({
+            :latitude =>  52.266666,
+            :longitude => 10.516667,
+            :format => :degrees
+          });
+        }
         var moment = Gregorian.localMoment(location, ts1);
         var info = Gregorian.info(moment, Time.FORMAT_SHORT);
 
-        var timeUser = " - ";
-        timeUser = Lang.format("$1$, $2$.$3$ $4$:$5$", [
-          openedBy,
+        var timeUser = Lang.format("$1$.$2$. $3$:$4$", [
           info.day.format("%02u"),
           info.month.format("%02u"),
           info.hour.format("%02u"),
