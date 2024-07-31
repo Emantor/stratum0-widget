@@ -31,7 +31,7 @@ class StratumBackgroundDelegate extends System.ServiceDelegate {
 
    function onReceive(responseCode as Number, data as Dictionary or String or Null) as Void {
      if (responseCode != 200) {
-        Background.exit([false]);
+        Background.exit([false, null, null, null]);
      }
 
      var state = null;

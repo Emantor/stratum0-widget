@@ -29,8 +29,9 @@ class WidgetGlanceView extends Ui.GlanceView {
 
         System.println("Accessing data");
         var havedata = data[0] as Boolean;
-        if (!havedata) {
+        if (data.size() < 4 or !havedata) {
           dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "No valid data", Graphics.TEXT_JUSTIFY_LEFT);
+          return;
         }
 
         var open = data[1] as Boolean;
@@ -51,19 +52,18 @@ class WidgetGlanceView extends Ui.GlanceView {
 
         var since = data[3] as Number;
         var ts1 = new Time.Moment(since);
-        var conditions = Weather.getCurrentConditions();
-        var location; 
-        if (conditions != null and conditions.observationLocationPosition != null) {
-          location = conditions.observationLocationPosition;
-        } else {
-          location = new Position.Location({
-            :latitude =>  52.266666,
-            :longitude => 10.516667,
-            :format => :degrees
-          });
-        }
+        var location = new Position.Location({
+          :latitude =>  52.266666,
+          :longitude => 10.516667,
+          :format => :degrees
+        });
         var moment = Gregorian.localMoment(location, ts1);
-        var info = Gregorian.info(moment, Time.FORMAT_SHORT);
+        var info;
+        if (moment != null) {
+          info = Gregorian.info(moment, Time.FORMAT_SHORT);
+        } else {
+          info = Gregorian.info(ts1, Time.FORMAT_SHORT);
+        }
 
         var timeUser = Lang.format("$1$.$2$. $3$:$4$", [
           info.day.format("%02u"),
