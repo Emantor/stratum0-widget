@@ -57,7 +57,14 @@ class WidgetGlanceView extends Ui.GlanceView {
           :longitude => 10.516667,
           :format => :degrees
         });
-        var moment = Gregorian.localMoment(location, ts1);
+        var moment = null;
+        try {
+          moment = Gregorian.localMoment(location, since);
+        } catch ( ex ) {
+          ex.printStackTrace();
+          return;
+        }
+
         var info;
         if (moment != null) {
           info = Gregorian.info(moment, Time.FORMAT_SHORT);

@@ -72,7 +72,7 @@ class stratum0_widgetApp extends Application.AppBase {
     }
 
     // Return the initial view of your application here
-    function getInitialView() as [Views] or [Views, InputDelegates] {
+    function getInitialView() {
         return [ new stratum0_widgetView() ];
     }
 
@@ -96,7 +96,7 @@ class stratum0_widgetApp extends Application.AppBase {
         Storage.setValue("bgdata", data);
     }
 
-    public function getServiceDelegate() as [System.ServiceDelegate] {
+    public function getServiceDelegate() {
         return [background];
     }
 }
