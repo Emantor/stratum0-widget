@@ -23,14 +23,14 @@ class WidgetGlanceView extends Ui.GlanceView {
 
         if (data == null) {
           System.println("data is null");
-          dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "No BG data", Graphics.TEXT_JUSTIFY_LEFT);
+          dc.drawText(0 ,0 , Graphics.FONT_GLANCE, "No BG data", Graphics.TEXT_JUSTIFY_LEFT);
           return;
         }
 
         System.println("Accessing data");
         var havedata = data[0] as Boolean;
         if (data.size() < 4 or !havedata) {
-          dc.drawText(10 ,0 , Graphics.FONT_GLANCE, "No valid data", Graphics.TEXT_JUSTIFY_LEFT);
+          dc.drawText(0 ,0 , Graphics.FONT_GLANCE, "No valid data", Graphics.TEXT_JUSTIFY_LEFT);
           return;
         }
 
@@ -48,7 +48,7 @@ class WidgetGlanceView extends Ui.GlanceView {
             openedBy
           ]);
         }
-        dc.drawText(10 ,0 , Graphics.FONT_GLANCE, openStatus, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(0 ,0 , Graphics.FONT_GLANCE, openStatus, Graphics.TEXT_JUSTIFY_LEFT);
 
         var since = data[3] as Number;
         var ts1 = new Time.Moment(since);
@@ -78,6 +78,6 @@ class WidgetGlanceView extends Ui.GlanceView {
           info.hour.format("%02u"),
           info.min.format("%02u")
         ]);
-        dc.drawText(10 ,dc.getHeight() / 2, Graphics.FONT_GLANCE, timeUser, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(0 ,dc.getHeight() / 2, Graphics.FONT_GLANCE, timeUser, Graphics.TEXT_JUSTIFY_LEFT);
     }
 }
