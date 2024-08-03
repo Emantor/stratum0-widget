@@ -1,5 +1,5 @@
 <layout id="MainLayout">
-    <bitmap id="id_stratum" x="10" y="25" filename="../drawables/stratum0.png" />
-    <label text="Stratum0: open" x="10" y="125" font="Gfx.FONT_LARGE" />
-    <label text="Someone, 19:20" x="10" y="145" font="Gfx.FONT_LARGE" />
+    <bitmap id="id_stratum" x="20" y="25" filename="../drawables/stratum0.png" />
+    <label id="status" text="Stratum0: unknown" x="10" y="85" font="Gfx.FONT_MEDIUM" />
+    <label id="date" text="" x="10" y="105" font="Gfx.FONT_MEDIUM" />
 </layout>
