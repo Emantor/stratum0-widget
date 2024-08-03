@@ -1,10 +1,12 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 
-class stratum0_widgetView extends WatchUi.View {
+class stratum0_mainWidgetView extends WatchUi.View {
 
-    function initialize() {
+    var base;
+    function initialize(base) {
         View.initialize();
+        me.base = base;
     }
 
     // Load your resources here
@@ -21,6 +23,11 @@ class stratum0_widgetView extends WatchUi.View {
     // Update the view
     function onUpdate(dc as Dc) as Void {
         // Call the parent onUpdate function to redraw the layout
+        var format = self.base.getFormatData(self.base.getData());
+        var drw = self.findDrawableById("status");
+        drw.setText(format[0]);
+        drw = self.findDrawableById("date");
+        drw.setText(format[1]);
         View.onUpdate(dc);
     }
 

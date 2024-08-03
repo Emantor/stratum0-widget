@@ -72,18 +72,21 @@ class stratum0_widgetApp extends Application.AppBase {
     }
 
     // Return the initial view of your application here
-    function getInitialView() {
-        return [ new stratum0_widgetView() ];
+    function getInitialView() as [Views] or [Views, InputDelegates] {
+        return [ new stratum0_mainWidgetView(self), new stratum0_mainWidgetDelegate() ];
     }
 
+    function getData() {
+        return Storage.getValue("bgdata");
+    }
     function getGlanceView() {
         var data = Storage.getValue("bgdata");
         if (data) {
             System.println("Starting glance with data");
-            glance = new $.WidgetGlanceView(data);
+            glance = new $.WidgetGlanceView(self, data);
         } else {
             System.println("Starting glance with null");
-            glance = new $.WidgetGlanceView(null);
+            glance = new $.WidgetGlanceView(self, null);
         }
         return [ glance ];
     }
@@ -98,6 +101,53 @@ class stratum0_widgetApp extends Application.AppBase {
 
     public function getServiceDelegate() {
         return [background];
+    }
+
+    public function getFormatData(data) {
+        if (!data[0]) {
+            return ["", ""];
+        }
+
+        var open = data[1] as Boolean;
+        var openedBy = data[2] as String;
+        var openStatus;
+
+        if (!open) {
+            openStatus = Lang.format("$1$: $2$", [
+                "Closed",
+                openedBy
+            ]);
+        } else {
+            openStatus = Lang.format("$1$: $2$", [
+                "Open",
+                openedBy
+            ]);
+        }
+        var since = data[3] as Number;
+        var location = new Position.Location({
+            :latitude =>  52.266666,
+            :longitude => 10.516667,
+            :format => :degrees
+        });
+        var moment = null;
+
+        moment = Gregorian.localMoment(location, since);
+
+        var info;
+        if (moment != null) {
+            info = Gregorian.info(moment, Time.FORMAT_SHORT);
+        } else {
+            var ts1 = new Time.Moment(since);
+            info = Gregorian.info(ts1, Time.FORMAT_SHORT);
+        }
+
+        var timeUser = Lang.format("$1$.$2$. $3$:$4$", [
+            info.day.format("%02u"),
+            info.month.format("%02u"),
+            info.hour.format("%02u"),
+            info.min.format("%02u")
+        ]);
+        return [openStatus, timeUser];
     }
 }
 

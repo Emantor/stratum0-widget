@@ -11,10 +11,12 @@ import Toybox.Position;
 class WidgetGlanceView extends Ui.GlanceView {
 
     var data as Null or Array = null;
+    var base;
 
-    function initialize(data) {
+    function initialize(base, data) {
       GlanceView.initialize();
       me.data = data as Array;
+      me.base = base;
     }
     
     function onUpdate(dc) {
@@ -34,50 +36,9 @@ class WidgetGlanceView extends Ui.GlanceView {
           return;
         }
 
-        var open = data[1] as Boolean;
-        var openedBy = data[2] as String;
-        var openStatus;
-        if (!open) {
-          openStatus = Lang.format("$1$: $2$", [
-            "Closed",
-            openedBy
-          ]);
-        } else {
-          openStatus = Lang.format("$1$: $2$", [
-            "Open",
-            openedBy
-          ]);
-        }
-        dc.drawText(0 ,0 , Graphics.FONT_GLANCE, openStatus, Graphics.TEXT_JUSTIFY_LEFT);
+        var format = self.base.getFormatData(data);
 
-        var since = data[3] as Number;
-        var ts1 = new Time.Moment(since);
-        var location = new Position.Location({
-          :latitude =>  52.266666,
-          :longitude => 10.516667,
-          :format => :degrees
-        });
-        var moment = null;
-        try {
-          moment = Gregorian.localMoment(location, since);
-        } catch ( ex ) {
-          ex.printStackTrace();
-          return;
-        }
-
-        var info;
-        if (moment != null) {
-          info = Gregorian.info(moment, Time.FORMAT_SHORT);
-        } else {
-          info = Gregorian.info(ts1, Time.FORMAT_SHORT);
-        }
-
-        var timeUser = Lang.format("$1$.$2$. $3$:$4$", [
-          info.day.format("%02u"),
-          info.month.format("%02u"),
-          info.hour.format("%02u"),
-          info.min.format("%02u")
-        ]);
-        dc.drawText(0 ,dc.getHeight() / 2, Graphics.FONT_GLANCE, timeUser, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(0 ,0 , Graphics.FONT_GLANCE, format[0], Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(0 ,dc.getHeight() / 2, Graphics.FONT_GLANCE, format[1], Graphics.TEXT_JUSTIFY_LEFT);
     }
 }
